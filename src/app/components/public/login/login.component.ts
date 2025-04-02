@@ -36,5 +36,7 @@ export class LoginComponent {
       console.error('Login error:', error);
     }
   }
-  
+  navigateToRegister() {
+    this.router.navigate(['/register']);
+  }
 }
