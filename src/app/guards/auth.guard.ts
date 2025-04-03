@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import { ClerkService } from 'ngx-clerk';
+import { ClerkService } from '../services/clerkService';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 

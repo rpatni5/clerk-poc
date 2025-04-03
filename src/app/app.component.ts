@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ClerkService } from 'ngx-clerk';
+import { ClerkService } from './services/clerkService';
 import { environment } from '../enviornment/environment';
 import { CommonModule } from '@angular/common';
 @Component({
@@ -16,15 +16,7 @@ export class AppComponent implements OnInit{
     this.initializeClerk();
   }
   ngOnInit(): void {
-  
-    // setTimeout(() => {
-    //   console.log("Executed after 3 seconds");
-    //   this.loaded = true;
-    // }, 3000);
-    
   }
-
-
 
   initializeClerk() {
     try {
