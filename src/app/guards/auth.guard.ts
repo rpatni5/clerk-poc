@@ -8,19 +8,28 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(private clerk: ClerkService, private router: Router) {}
+  constructor(private clerk: ClerkService, private router: Router,
+
+  ) {}
 
   canActivate(): Observable<boolean> {
     return this.clerk.user$.pipe(
-      map((user) => {
-        if (user) {
-          return true; 
+        map((user) => {
+        if (!user) {
+          this.router.navigate(['/login']);
+          return false;
+        }
+        const usersData = JSON.parse(localStorage.getItem("usersData") || "[]");
+        const currentUser = usersData.find((u: any) => u.id === user.id);
+
+        if (currentUser && currentUser.tenantId) {
+          return true;
         } else {
-          this.router.navigate(['/login']); 
+          this.router.navigate(['/register']);
           return false;
         }
       })
     );
   }
-
 }
+

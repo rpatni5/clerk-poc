@@ -8,7 +8,8 @@ import {
   OnDestroy,
   AfterViewInit,
   Input,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  NgZone
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -31,7 +32,6 @@ import { Tenant } from '../../../interface/tenantInterface';
 export class RegisterComponent implements AfterViewInit, OnDestroy {
   @ViewChild("clerkSignUp") clerkSignUpRef!: ElementRef;
   @ViewChild("clerkOrgCreate") clerkOrgCreateRef!: ElementRef;
-  // @ViewChild('clerkOrgCreate', { static: false }) clerkOrgCreateRef!: ElementRef;
   @Input() props: SignUpProps | undefined;
   @Input() orgProps: CreateOrganizationProps | undefined;
 
@@ -39,10 +39,13 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
   organizationId: string | null = null;
   organizationName: string = '';
 
-  constructor(private clerkService: ClerkService, private router: Router,private storageService :StorageService,
+  constructor(private clerkService: ClerkService, private ngZone: NgZone,private router: Router, private storageService: StorageService,
     private cdRef: ChangeDetectorRef) { }
 
   ngAfterViewInit() {
+    localStorage.removeItem("userId");
+    localStorage.removeItem("tenantId");
+
     this.mountSignUp();
 
   }
@@ -52,8 +55,8 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
       this.clerkService.clerk$.pipe(take(1)).subscribe((clerk) => {
         clerk.mountSignUp(this.clerkSignUpRef.nativeElement, {
           ...this.props,
-          signInUrl: '/login',
-          afterSignUpUrl: 'http://localhost:4200/register#/verify-email-address'
+          // signInUrl: '/login',
+          // afterSignUpUrl: '/register#/verify-email-address'
         });
       });
 
@@ -85,9 +88,6 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-
-  
-
   openCreateOrganization() {
     this.cdRef.detectChanges();
     if (!this.clerkOrgCreateRef || !this.clerkOrgCreateRef.nativeElement) {
@@ -98,35 +98,39 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
     const updatedOrgProps: CreateOrganizationProps = {
       ...this.orgProps,
       skipInvitationScreen: true,
-      afterCreateOrganizationUrl: '/admin/dashboard'
+      // afterCreateOrganizationUrl: '/admin/dashboard'
     };
     this.clerkService.clerk$.pipe(take(1)).subscribe((clerk) => {
       clerk.mountCreateOrganization(this.clerkOrgCreateRef.nativeElement, updatedOrgProps);
+
+      this.clerkService.organization$.pipe(take(1)).subscribe((org) => {
+        if (org) {
+          this.organizationId = org.id;
+          const newOrg: Tenant = {
+            id: org.id,
+            organizationName: org.name,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            isActive: true,
+          };
+          this.storageService.saveOrganization(newOrg);
+          const users = this.storageService.getUsers();
+          const updatedUsers = users.map(user =>
+            user.id === this.userId ? { ...user, tenantId: this.organizationId } : user
+          );
+          localStorage.setItem("tenantId", JSON.stringify(this.organizationId));
+
+          localStorage.setItem("usersData", JSON.stringify(updatedUsers));
+
+          setTimeout(() => {
+            this.ngZone.run(() => {
+              console.log("Navigating to /admin/dashboard...");
+              this.router.navigate(['/admin/dashboard']);
+            });
+          }, 100);
+        }
+      });
     });
-    
-    this.clerkService.organization$.pipe(take(1)).subscribe((org) => {
-      if (org) {
-        this.organizationId = org.id;
-        // const newOrg: Tenant = {
-        //   id: org.id,
-        //   organizationName: org.name,
-        //   createdAt: new Date().toISOString(),
-        //   updatedAt: new Date().toISOString(),
-        //   isActive: true,
-        // };
-        // this.storageService.saveOrganization(newOrg);
-        // const users = this.storageService.getUsers();
-        // const updatedUsers = users.map(user =>
-        //   user.id === this.userId ? { ...user, tenantId: this.organizationId } : user
-        // );
-        // localStorage.setItem("tenantId", JSON.stringify(this.organizationId));
-
-        // localStorage.setItem("usersData", JSON.stringify(updatedUsers));
-
-        this.router.navigate(['/admin/dashboard']);
-      }
-    });
-
   }
 
   ngOnDestroy(): void {

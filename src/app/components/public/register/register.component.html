@@ -14,9 +14,12 @@
     <img src="assets/images/logo.jpg" alt="Company Logo" class="logo" />
   </div>
   <div class="signIn-container">
-    <div #clerkSignUp></div>
-    <div *ngIf="userId">
-      <div #clerkOrgCreate></div>
+    <div class="signIn-container">
+      <!-- Show Sign Up first -->
+      <div #clerkSignUp *ngIf="!userId"></div>
+  
+      <!-- Show Create Organization only if userId exists -->
+      <div #clerkOrgCreate *ngIf="userId"></div>
     </div>
   </div>
 </div>

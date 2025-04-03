@@ -19,6 +19,7 @@ export class LoginComponent {
   @Input() props: SignInProps | undefined;
 
   constructor(
+    private storageService: StorageService,
     private clerkService: ClerkService,
     private router: Router,
   ) { }
@@ -32,19 +33,37 @@ export class LoginComponent {
       this.clerkService.clerk$.pipe(take(1)).subscribe((clerk) => {
         clerk.mountSignIn(this.clerkSignInRef.nativeElement, {
           ...this.props,
-          signUpUrl: '/register' 
+          // signUpUrl: '/register' 
         });
       });
   
       this.clerkService.user$.pipe(
         filter(user => !!user),
         take(1)
-      ).subscribe(() => {
-        this.router.navigate(['/admin/dashboard']).then(() => {
-          window.location.reload();
-        });
-        // this.router.navigate(['/admin/dashboard']);
+      ).subscribe((user) => {
+        if (user) {
+          const usersData = this.storageService.getUsers();
+          const currentUser = usersData.find(u => u.id === user.id);
+      
+          if (currentUser?.tenantId) {
+            this.router.navigate(['/admin/dashboard']).then(() => {
+              window.location.reload();
+            });
+          } else {
+            console.error("Tenant ID missing! Redirecting to register.");
+            // this.router.navigate(['/register']);
+          }
+        }
       });
+      // this.clerkService.user$.pipe(
+      //   filter(user => !!user),
+      //   take(1)
+      // ).subscribe(() => {
+      //   this.router.navigate(['/admin/dashboard']).then(() => {
+      //     window.location.reload();
+      //   });
+      //   // this.router.navigate(['/admin/dashboard']);
+      // });
     }
   }
 
