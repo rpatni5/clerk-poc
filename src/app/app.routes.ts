@@ -30,5 +30,5 @@ export const routes: Routes = [
         (c) => c.AdminHomePageComponent
       ),
   },
-  { path: '**', redirectTo: '' }, 
+  { path: '**', redirectTo: 'register' }, 
 ];
