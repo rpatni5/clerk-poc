@@ -1,5 +1,5 @@
 <div class="auth-page">
   <div class="signIn-container">
-    <div #organizationProfile></div>
+  <div #organizationProfile *ngIf="userHasAccountAdminRole"></div>
   </div>
 </div>

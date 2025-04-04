@@ -1,5 +1,5 @@
 <div class="container form-container">
-    <form [formGroup]="userForm">
+    <form [formGroup]="addForm">
         <!-- <div class="row mb-3 mt-3">
             <div class="col-sm-12 col-md-6">
               <mat-form-field class="form-field max-width" appearance="outline">
@@ -27,9 +27,9 @@
         </div>
 
         <div class="row row-field">
-            <div class="col-md-6">
+            <div class="col-md-6 column" >
                 <label class="form-label">Username</label>
-                <input type="text" class="form-control" formControlName="username" />
+                <input type="text" class="form-control" formControlName="userName" />
             </div>
             <div class="col-md-6">
                 <label class="form-label">Email</label>
@@ -38,13 +38,13 @@
         </div>
 
         <div class="row row-field">
-            <div class="col-md-6">
+            <div class="col-md-6 column">
                 <label class="form-label">Password</label>
                 <input type="password" class="form-control" formControlName="password" />
             </div>
             <div class="col-md-6">
                 <label class="form-label">Role</label>
-                <select class="form-select" formControlName="role">
+                <select class="form-control select" formControlName="role">
                     <option value="Worker">Worker</option>
                 </select>
             </div>
@@ -52,7 +52,7 @@
 
         <div class="row text-center">
             <div class="col-md-12">
-                <button type="submit" class="btn btn-primary w-100 mt-3" [disabled]="!userForm.valid"
+                <button type="submit" class="btn btn-primary w-100 mt-3" [disabled]="!addForm.valid"
                     (click)="onSubmit()">Create User</button>
             </div>
         </div>
