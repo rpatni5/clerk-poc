@@ -33,7 +33,7 @@ export class LoginComponent {
       this.clerkService.clerk$.pipe(take(1)).subscribe((clerk) => {
         clerk.mountSignIn(this.clerkSignInRef.nativeElement, {
           ...this.props,
-          signUpUrl: '/register' 
+          // signUpUrl: '/register' 
         });
       });
   

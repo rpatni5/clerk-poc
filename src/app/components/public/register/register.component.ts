@@ -157,7 +157,7 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
       skipInvitationScreen: true,
       // afterCreateOrganizationUrl: '/admin/dashboard'
     };
-    this.clerkService.clerk$.pipe(take(1)).subscribe((clerk) => {
+    this.clerkService.clerk$.subscribe((clerk) => {
       clerk.mountCreateOrganization(this.clerkOrgCreateRef.nativeElement, updatedOrgProps);
 
       this.clerkService.organization$.pipe(take(1)).subscribe((org) => {
@@ -181,7 +181,7 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
           this.ngZone.run(() => {
             console.log("Navigating to /admin/dashboard...");
             this.router.navigate(['/admin/dashboard']).then(() => {
-              window.location.reload();  // 🚀 Force reload
+              // window.location.reload();  // 🚀 Force reload
             });
           });
         }
