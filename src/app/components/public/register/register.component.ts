@@ -55,8 +55,6 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
       this.clerkService.clerk$.pipe(take(1)).subscribe((clerk) => {
         clerk.mountSignUp(this.clerkSignUpRef.nativeElement, {
           ...this.props,
-          // signInUrl: '/login',
-          // afterSignUpUrl: '/register#/verify-email-address'
         });
       });
 
@@ -88,63 +86,6 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-
-  // openCreateOrganization() {
-  //   this.cdRef.detectChanges();
-
-  //   if (!this.clerkOrgCreateRef || !this.clerkOrgCreateRef.nativeElement) {
-  //     this.router.navigate(['/register']);
-  //     console.error("clerkOrgCreateRef is still not available!");
-  //     return;
-  //   }
-
-  //   const updatedOrgProps: CreateOrganizationProps = {
-  //     ...this.orgProps,
-  //     skipInvitationScreen: true,
-  //     // afterCreateOrganizationUrl: '/admin/dashboard'
-  //   };
-
-  //   this.clerkService.clerk$.pipe(take(1)).subscribe((clerk) => {
-  //     clerk.mountCreateOrganization(this.clerkOrgCreateRef.nativeElement, updatedOrgProps);
-
-  //     // 👇 Wrap this logic in a small delay to ensure organization is fully mounted
-  //     setTimeout(() => {
-  //       this.clerkService.organization$.pipe(
-  //         filter((org) => !!org),
-  //         take(1)
-  //       ).subscribe((org) => {
-  //         if (!org) return; 
-
-  //         this.organizationId = org.id;
-  //         const newOrg: Tenant = {
-  //           id: org.id,
-  //           organizationName: org.name,
-  //           createdAt: new Date().toISOString(),
-  //           updatedAt: new Date().toISOString(),
-  //           isActive: true,
-  //         };
-
-  //         this.storageService.saveOrganization(newOrg);
-
-  //         const users = this.storageService.getUsers();
-  //         const updatedUsers = users.map(user =>
-  //           user.id === this.userId ? { ...user, tenantId: this.organizationId } : user
-  //         );
-
-  //         localStorage.setItem("tenantId", JSON.stringify(this.organizationId));
-  //         localStorage.setItem("usersData", JSON.stringify(updatedUsers));
-  //         this.clerkService.organization$.next(org);
-  //         this.router.navigate(['/admin/dashboard']);
-  //         this.ngZone.run(() => {
-  //           console.log("Navigating to /admin/dashboard...");
-
-  //         });
-  //       });
-  //     }, 500); 
-  //   });
-  // }
-
-
   openCreateOrganization() {
     this.cdRef.detectChanges();
     if (!this.clerkOrgCreateRef || !this.clerkOrgCreateRef.nativeElement) {
@@ -155,11 +96,10 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
     const updatedOrgProps: CreateOrganizationProps = {
       ...this.orgProps,
       skipInvitationScreen: true,
-      // afterCreateOrganizationUrl: '/admin/dashboard'
     };
     this.clerkService.clerk$.subscribe((clerk) => {
       clerk.mountCreateOrganization(this.clerkOrgCreateRef.nativeElement, updatedOrgProps);
-
+    
       this.clerkService.organization$.pipe(take(1)).subscribe((org) => {
         if (org) {
           this.organizationId = org.id;
@@ -181,7 +121,6 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
           this.ngZone.run(() => {
             console.log("Navigating to /admin/dashboard...");
             this.router.navigate(['/admin/dashboard']).then(() => {
-              // window.location.reload();  // 🚀 Force reload
             });
           });
         }

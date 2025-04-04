@@ -9,6 +9,20 @@ export default [
         (c) => c.DashboardComponent
       ),
   },
+  {
+    path: 'users',
+    loadComponent: () =>
+      import('./users/add-users/add-users.component').then(
+        (c) => c.AddUsersComponent
+      ),
+  },
+  {
+    path: 'organization',
+    loadComponent: () =>
+      import('./organization/organization.component').then(
+        (c) => c.OrganizationComponent
+      ),
+  },
 
 
 ] as Route[];

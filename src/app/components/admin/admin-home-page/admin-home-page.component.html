@@ -6,6 +6,8 @@
         <div class="menu">
             <ul>
                 <li><a routerLink="/admin/dashboard">Dashboard</a></li>
+                <li><a routerLink="/admin/users">Users</a></li>
+                <li><a routerLink="/admin/organization">Organization</a></li>
             </ul>
         </div>
     </aside>
@@ -13,13 +15,8 @@
     <div class="main-content">
         <nav class="navbar">
             <div class="navbar-content">
-                <img 
-                *ngIf="userImageUrl" 
-                [src]="userImageUrl" 
-                alt="Manage Account" 
-                class="user-icon" 
-                (click)="manageAccount()"
-            />
+                <img *ngIf="userImageUrl" [src]="userImageUrl" alt="Manage Account" class="user-icon"
+                    (click)="manageAccount()" />
                 <button class="logout-btn" (click)="logout()">Logout</button>
             </div>
         </nav>

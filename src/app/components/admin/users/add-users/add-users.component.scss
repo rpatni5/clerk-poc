@@ -1,0 +1,45 @@
+.form-container {
+    max-width: 450px;
+    margin: auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-label {
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  .form-control, .form-select {
+    height: 42px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    padding: 8px;
+    margin-right: 31px;
+  }
+  
+  .btn {
+    font-weight: bold;
+    padding: 12px;
+    margin-top: 10px;
+  }
+  
+  .row {
+    margin-bottom: 15px;
+  }
+  .form-field {
+    margin-left: 20px;
+    margin-right: 20px;
+    width: calc(100% - 40px);
+  }
+  .row-field{
+ display: flex;
+
+  }
+
+  .column{
+    margin-right:10px;
+  }
+

@@ -3,7 +3,7 @@ import { StorageService } from '../../../services/storageService';
 import { User } from '../../../interface/userInterface';
 import { Tenant } from '../../../interface/tenantInterface';
 import { JsonReaderService } from '../../../services/jsonReaderService';
-import { UserProfileProps } from '@clerk/clerk-js/dist/types/ui/types';
+import { OrganizationListProps, OrganizationProfileProps, UserProfileProps } from '@clerk/clerk-js/dist/types/ui/types';
 import { ClerkService } from '../../../services/clerkService';
 import { take } from 'rxjs';
 
@@ -20,6 +20,7 @@ export class DashboardComponent implements AfterViewInit {
 
   @ViewChild("organizationProfile", { static: false }) organizationProfileRef!: ElementRef;
   @Input() props: UserProfileProps | undefined;
+  @Input() orgProps: OrganizationProfileProps | undefined;
 
   constructor(
     private clerkService: ClerkService,
@@ -41,31 +42,41 @@ export class DashboardComponent implements AfterViewInit {
         console.error("Clerk is not initialized.");
         return;
       }
-
+  
       if (this.organizationProfileRef) {
-        clerk.mountOrganizationProfile(this.organizationProfileRef.nativeElement);
+        clerk.mountOrganizationProfile(this.organizationProfileRef.nativeElement, {
+          ...this.orgProps,
+          appearance: {
+            elements: {
+              formButtonPrimary: {
+                fontSize: 14,
+                textTransform: 'none',
+                backgroundColor: 'red',
+                '&:hover, &:focus, &:active': {
+                  backgroundColor: '#49247A',
+                },
+              },
+            },
+          },
+        } as OrganizationProfileProps);
       }
-
-      // this.addMemberToOrganization(clerk);
     });
   }
-
-  // addMemberToOrganization(clerk: any) {
-  //   if (!clerk.organization) {
-  //     console.error("Clerk organization not found.");
-  //     return;
-  //   }
-
-  //   const userId = "user_2vDDy9A0EwUajCVu2BmP2yGld1o"; // Replace with dynamic userId
-
-  //   clerk.organization.addMember({ userId, role: 'org:admin' })
-  //     .then(() => {
-  //       console.log(`User ${userId} added successfully to the organization.`);
-  //     })
-  //     .catch((error: any) => {
-  //       console.error("Error adding user:", error);
-  //     });
-  // }
+  
+  addMemberToOrganization(clerk: any) {
+    if (!clerk.organization) {
+      console.error("Clerk organization not found.");
+      return;
+    }
+    const userId = "user_2vDDy9A0EwUajCVu2BmP2yGld1o"; 
+    clerk.organization.addMember({ userId, role: 'org:worker' })
+      .then(() => {
+        console.log(`User ${userId} added successfully to the organization.`);
+      })
+      .catch((error: any) => {
+        console.error("Error adding user:", error);
+      });
+  }
 
   loadUsers() {
     this.usersData = this.storageService.getUsers();

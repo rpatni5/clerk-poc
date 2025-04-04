@@ -4,6 +4,9 @@ import { Router, RouterModule } from '@angular/router';
 import { ClerkService } from '../../../services/clerkService';
 import { take } from 'rxjs';
 import { UserResource } from "@clerk/types";
+import { StorageService } from '../../../services/storageService';
+import { Tenant } from '../../../interface/tenantInterface';
+import { User } from '../../../interface/userInterface';
 
 @Component({
   selector: 'app-admin-home-page',
@@ -14,23 +17,31 @@ import { UserResource } from "@clerk/types";
 })
 export class AdminHomePageComponent {
   userImageUrl: string | null = null;
+  usersData: User[] = [];
+  organizationData: Tenant[] = [];
 
-  constructor(private clerk: ClerkService, private router: Router) { }
+  constructor(private clerk: ClerkService, private router: Router,
+    private storageService: StorageService,
+  ) { }
 
   ngOnInit() {
     this.clerk.user$.subscribe((user: UserResource | null | undefined) => {
       if (user) {
-        this.userImageUrl = user.imageUrl; 
+        this.userImageUrl = user.imageUrl;
       }
     });
   }
-  
+
   async logout() {
     try {
       this.clerk.clerk$.pipe(take(1)).subscribe(async (clerkInstance) => {
         if (clerkInstance) {
           await clerkInstance.signOut();
- 
+          localStorage.removeItem("userId");
+          localStorage.removeItem("tenantId");
+          this.usersData = [];
+          this.organizationData = [];
+
           this.router.navigate(['/login']);
         }
       });
@@ -38,10 +49,10 @@ export class AdminHomePageComponent {
       console.error('Logout error:', error);
     }
   }
-  
-  
+
+
 
   manageAccount() {
-    this.clerk.openUserProfile(); 
+    this.clerk.openUserProfile();
   }
 }
