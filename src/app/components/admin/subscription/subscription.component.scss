@@ -1,0 +1,76 @@
+.subscription-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 40px;
+  background: #f3f6f9;
+}
+
+.subscription-card {
+  width: 300px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  mat-card-header {
+    background: #fafafa;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 12px;
+  }
+
+  mat-card-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+
+  mat-card-subtitle {
+    font-size: 0.95rem;
+    color: #777;
+  }
+
+  mat-card-content {
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 16px 0;
+      li {
+        padding: 4px 0;
+      }
+    }
+
+    .price {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #333;
+      margin-top: 10px;
+    }
+  }
+
+  mat-card-actions {
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  &.free {
+    border-top: 4px solid #4caf50;
+  }
+
+  &.pro {
+    border-top: 4px solid #2196f3;
+  }
+
+  &.enterprise {
+    border-top: 4px solid #ff9800;
+  }
+}
+mat-card-actions {
+  margin-top: auto; 
+}
