@@ -5,9 +5,9 @@
         </div>
         <div class="menu">
             <ul>
-                <li><a routerLink="/admin/dashboard">Dashboard</a></li>
-                <li><a routerLink="/admin/users">Users</a></li>
-                <li><a routerLink="/admin/organization">Organization</a></li>
+                <li *ngIf="!isSystemAdministrator"><a routerLink="/admin/dashboard">Dashboard</a></li>
+                <li *ngIf="!isSystemAdministrator"><a routerLink="/admin/users">Users</a></li>
+                <li *ngIf="isSystemAdministrator"><a routerLink="/admin/organization">Organization</a></li>
             </ul>
         </div>
     </aside>

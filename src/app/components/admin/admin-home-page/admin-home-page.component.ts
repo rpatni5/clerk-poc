@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ClerkService } from '../../../services/clerkService';
 import { take } from 'rxjs';
@@ -19,9 +19,11 @@ export class AdminHomePageComponent {
   userImageUrl: string | null = null;
   usersData: User[] = [];
   organizationData: Tenant[] = [];
-
+  isSystemAdministrator: boolean = false;
   constructor(private clerk: ClerkService, private router: Router,
     private storageService: StorageService,
+    private cdRef: ChangeDetectorRef
+
   ) { }
 
   ngOnInit() {
@@ -50,7 +52,26 @@ export class AdminHomePageComponent {
     }
   }
 
-
+  ngAfterViewInit(): void {
+    this.clerk.clerk$.pipe(take(1)).subscribe((clerk) => {
+      if (!clerk) {
+        console.error("Clerk is not initialized.");
+        return;
+      }
+      const currentUser = clerk.user;
+      if (!currentUser) {
+        console.error("No user found.");
+        return;
+      }
+      const accountAdminMembership = currentUser.organizationMemberships.find(membership =>
+        membership.role === 'org:system_administrator'
+      );
+      if (accountAdminMembership?.role == 'org:system_administrator') {
+        this.isSystemAdministrator = true;
+      }
+      this.cdRef.detectChanges();
+    });
+  }
 
   manageAccount() {
     this.clerk.openUserProfile();
