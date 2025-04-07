@@ -23,6 +23,13 @@ export default [
         (c) => c.OrganizationComponent
       ),
   },
+  {
+    path: 'subscription',
+    loadComponent: () =>
+      import('./subscription/subscription.component').then(
+        (c) => c.SubscriptionComponent
+      ),
+  },
 
 
 ] as Route[];
