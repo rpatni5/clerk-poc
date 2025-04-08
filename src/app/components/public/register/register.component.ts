@@ -99,7 +99,7 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
     };
     this.clerkService.clerk$.subscribe((clerk) => {
       clerk.mountCreateOrganization(this.clerkOrgCreateRef.nativeElement, updatedOrgProps);
-    
+
       this.clerkService.organization$.pipe(take(1)).subscribe((org) => {
         if (org) {
           this.organizationId = org.id;
