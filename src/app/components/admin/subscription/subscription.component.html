@@ -1,7 +1,7 @@
 <div class="subscription-wrapper">
     <mat-card *ngFor="let plan of plans" class="subscription-card {{ plan.cssClass }}">
       <mat-card-header>
-        <mat-card-title>{{ plan.name }}</mat-card-title>
+        <mat-card-title>{{ plan.name }} Plan</mat-card-title>
         <mat-card-subtitle>{{ plan.subtitle }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
@@ -11,7 +11,22 @@
         <div class="price">{{ plan.price }}</div>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-stroked-button>{{ plan.buttonText }}</button>
+        <ng-container *ngIf="plan.name !== 'Free'; else freeTemplate">
+          <button mat-stroked-button>Upgrade to {{ plan.name }}</button>
+        </ng-container>
+        <ng-template #freeTemplate>
+          <ng-container *ngIf="!plan.isExpired; else expiredBtn">
+            <button mat-stroked-button color="accent" class="expire-button">
+              Expire on <span class="expire-date">{{ plan.expiryDateFormatted }}</span>
+            </button>
+          </ng-container>
+        </ng-template>
+      
+        <ng-template #expiredBtn>
+          <button mat-stroked-button color="warn" class="expired-button" disabled>
+            Expired
+          </button>
+        </ng-template>
       </mat-card-actions>
     </mat-card>
   </div>
