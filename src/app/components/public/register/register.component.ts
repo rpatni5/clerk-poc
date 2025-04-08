@@ -19,6 +19,8 @@ import { CreateOrganizationProps, SignUpProps } from '@clerk/clerk-js/dist/types
 import { StorageService } from '../../../services/storageService';
 import { User } from '../../../interface/userInterface';
 import { Tenant } from '../../../interface/tenantInterface';
+import { OrganizationService } from '../../../services/organizationService';
+import { OrganizationModel } from '../../../model/organizationModel';
 
 @Component({
   selector: 'app-register',
@@ -38,9 +40,10 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
   userId: string | null = null;
   organizationId: string | null = null;
   organizationName: string = '';
-
+  isOrgSaved: boolean = false;
   constructor(private clerkService: ClerkService, private ngZone: NgZone, private router: Router, private storageService: StorageService,
-    private cdRef: ChangeDetectorRef) { }
+    private cdRef: ChangeDetectorRef,
+    private organizationService: OrganizationService) { }
 
   ngAfterViewInit() {
     localStorage.removeItem("userId");
@@ -110,13 +113,18 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
             updatedAt: new Date().toISOString(),
             isActive: true,
           };
+          const organizationModel: OrganizationModel = {
+            id: org.id,
+            name: org.name,
+            createdAt: org.createdAt
+          };
+          if (!this.isOrgSaved) { this.saveOrg(organizationModel); }
           this.storageService.saveOrganization(newOrg);
           const users = this.storageService.getUsers();
           const updatedUsers = users.map(user =>
             user.id === this.userId ? { ...user, tenantId: this.organizationId } : user
           );
           localStorage.setItem("tenantId", JSON.stringify(this.organizationId));
-
           localStorage.setItem("usersData", JSON.stringify(updatedUsers));
           this.ngZone.run(() => {
             console.log("Navigating to /admin/dashboard...");
@@ -127,7 +135,13 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
       });
     });
   }
-
+  saveOrg(organizationModel: any) {
+    this.organizationService.save(organizationModel).subscribe({
+      next: (res) => console.log('Saved successfully', res),
+      error: (err) => console.error('Save failed', err)
+    });
+    this.isOrgSaved = true;
+  }
   ngOnDestroy(): void {
     this.clerkService.clerk$.pipe(take(1)).subscribe((clerk) => {
       clerk.unmountSignUp(this.clerkSignUpRef?.nativeElement);

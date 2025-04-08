@@ -41,6 +41,7 @@ export class AdminHomePageComponent {
           await clerkInstance.signOut();
           localStorage.removeItem("userId");
           localStorage.removeItem("tenantId");
+          localStorage.removeItem("organizationsData");
           this.usersData = [];
           this.organizationData = [];
 

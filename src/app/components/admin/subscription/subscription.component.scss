@@ -74,3 +74,38 @@
 mat-card-actions {
   margin-top: auto; 
 }
+.free-plan-note {
+  padding: 8px 12px;
+  background-color: #f3f6f9;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  border: 1px solid #dbe2ea;
+  width: fit-content;
+}
+.expire-button {
+  font-weight: 500;
+  font-size: 14px;
+  padding: 8px 16px;
+  text-transform: none;
+}
+
+.expire-date {
+  font-weight: 600;
+  margin-left: 6px;
+  color:white; 
+}
+
+.expire-button, .expired-button {
+  font-weight: 500;
+  font-size: 14px;
+  padding: 8px 16px;
+  text-transform: none;
+}
+
+.expired-button {
+  background-color: #ffe6e6;
+  color: #d32f2f;
+}
+

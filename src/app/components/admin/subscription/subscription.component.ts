@@ -1,59 +1,45 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Pipe } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
+import { SubscriptionService } from '../../../services/subscriptionService';
+import { OrganizationService } from '../../../services/organizationService';
+import { StorageService } from '../../../services/storageService';
 
 @Component({
   selector: 'app-subscription',
   standalone: true,
-  imports: [MatCardModule,CommonModule],
+  imports: [MatCardModule, CommonModule],
   templateUrl: './subscription.component.html',
   styleUrl: './subscription.component.scss'
 })
 export class SubscriptionComponent {
-  // subscription.component.ts
-  plans = [
-    {
-      name: 'Free Plan',
-      subtitle: '14-day trial for up to 2 users',
-      features: [
-        'Trial access to all features',
-        'Limited to 2 users',
-        'Basic support'
-      ],
-      price: 'Free',
-      buttonText: 'Start Free Trial',
-      buttonColor: 'primary',
-      cssClass: 'free',
-    },
-    {
-      name: 'Pro Plan',
-      subtitle: '$15/month for 5–25 users',
-      features: [
-        'All Free plan features',
-        'Up to 5 users included',
-        'Scalable up to 25 users (add via settings)',
-        'Email & chat support'
-      ],
-      price: '$15 / month',
-      buttonText: 'Upgrade to Pro',
-      buttonColor: 'accent',
-      cssClass: 'pro',
-    },
-    {
-      name: 'Enterprise Plan',
-      subtitle: '$25/month for 25+ users',
-      features: [
-        'All Pro plan features',
-        'Includes 25 users',
-        'Unlimited users with scalable pricing',
-        'Dedicated account manager'
-      ],
-      price: '$25 / month',
-      buttonText: 'Upgrade to Enterprise',
-      buttonColor: 'warn',
-      cssClass: 'enterprise',
-      
-    }
-  ];
-}
+  plans: any[] = [];
+  constructor(private readonly subscriptionService: SubscriptionService,
+    private readonly organizationService: OrganizationService,
+  ) {
+  }
 
+  ngOnInit() {
+    const orgId = localStorage.getItem('tenantId');
+    const tenantId = orgId ? orgId.replace(/^"|"$/g, '') : null;
+    this.subscriptionService.getPlans(tenantId).subscribe((data: any[]) => {
+      const locale: string = 'en-US';
+
+      this.plans = data.map((plan: any) => {
+        const createdAt = new Date(plan.createdAt);
+        const expiryDate = new Date(createdAt);
+        expiryDate.setDate(createdAt.getDate() + 14);
+
+        const isExpired = expiryDate < new Date();
+
+        return {
+          ...plan,
+          features: typeof plan.features === 'string' ? plan.features.split(',') : plan.features,
+          createdAtFormatted: createdAt.toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' }),
+          expiryDateFormatted: expiryDate.toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' }),
+          isExpired
+        };
+      });
+    })
+  }
+}
