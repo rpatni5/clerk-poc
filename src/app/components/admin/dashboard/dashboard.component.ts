@@ -7,6 +7,8 @@ import { OrganizationListProps, OrganizationProfileProps, UserProfileProps } fro
 import { ClerkService } from '../../../services/clerkService';
 import { take } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { OrganizationModel } from '../../../model/organizationModel';
+import { OrganizationService } from '../../../services/organizationService';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,11 +29,13 @@ export class DashboardComponent implements AfterViewInit {
     private clerkService: ClerkService,
     private storageService: StorageService,
     private jsonReaderService: JsonReaderService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private organizationService: OrganizationService
   ) { }
 
   ngOnInit(): void {
     this.loadUsers();
+
   }
 
 
@@ -50,15 +54,15 @@ export class DashboardComponent implements AfterViewInit {
         membership.role === 'org:account_admin'
       );
       console.log("role", accountAdminMembership?.role)
-      if(accountAdminMembership?.role == 'org:account_admin'){
-       this.userHasAccountAdminRole = true;
+      if (accountAdminMembership?.role == 'org:account_admin') {
+        this.userHasAccountAdminRole = true;
       }
       this.cdRef.detectChanges();
       this.mountOrganizationProfile();
     });
 
 
-   
+
   }
 
   mountOrganizationProfile() {
