@@ -42,6 +42,11 @@ export class AdminHomePageComponent {
           localStorage.removeItem("userId");
           localStorage.removeItem("tenantId");
           localStorage.removeItem("organizationsData");
+          Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('orgCreated_') || key.startsWith('customerCreated_')) {
+              localStorage.removeItem(key);
+            }
+          });
           this.usersData = [];
           this.organizationData = [];
 
