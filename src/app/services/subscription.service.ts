@@ -16,6 +16,6 @@ export class SubscriptionService {
     return this.http.post('/api/subscription/upgrade', data);
   }
   createCustomer(customerData: any) {
-    return this.http.post(`${this.baseUrl}Stripe/assign-free-plan`, customerData);
+    return this.http.post(`${this.baseUrl}Stripe/create-customer`, customerData);
   }
 }
