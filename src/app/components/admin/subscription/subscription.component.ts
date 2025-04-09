@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Pipe } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { SubscriptionService } from '../../../services/subscriptionService';
+import { SubscriptionPlanService } from '../../../services/subscriptionPlanService';
 import { OrganizationService } from '../../../services/organizationService';
 import { StorageService } from '../../../services/storageService';
 
@@ -14,7 +14,7 @@ import { StorageService } from '../../../services/storageService';
 })
 export class SubscriptionComponent {
   plans: any[] = [];
-  constructor(private readonly subscriptionService: SubscriptionService,
+  constructor(private readonly subscriptionPlanService: SubscriptionPlanService,
     private readonly organizationService: OrganizationService,
   ) {
   }
@@ -22,7 +22,7 @@ export class SubscriptionComponent {
   ngOnInit() {
     const orgId = localStorage.getItem('tenantId');
     const tenantId = orgId ? orgId.replace(/^"|"$/g, '') : null;
-    this.subscriptionService.getPlans(tenantId).subscribe((data: any[]) => {
+    this.subscriptionPlanService.getPlans(tenantId).subscribe((data: any[]) => {
       const locale: string = 'en-US';
 
       this.plans = data.map((plan: any) => {
