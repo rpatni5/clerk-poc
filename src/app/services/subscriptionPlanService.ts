@@ -5,9 +5,9 @@ import { environment } from "../../enviornment/environment";
 @Injectable({
     providedIn: 'root'
 })
-export class SubscriptionService {
+export class SubscriptionPlanService {
     private baseUrl = environment.API_URL;
-    private controller = 'Subscription'
+    private controller = 'SubscriptionPlan'
     constructor(private http: HttpClient) { }
 
     getPlans(tenantId: any) {

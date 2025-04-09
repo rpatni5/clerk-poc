@@ -15,10 +15,7 @@
   </div>
   <div class="signIn-container">
     <div class="signIn-container">
-      <!-- Show Sign Up first -->
       <div #clerkSignUp *ngIf="!userId"></div>
-  
-      <!-- Show Create Organization only if userId exists -->
       <div #clerkOrgCreate *ngIf="userId"></div>
     </div>
   </div>
