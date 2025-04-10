@@ -27,12 +27,12 @@ export class SubscriptionComponent {
 
   ngOnInit() {
     console.log(localStorage)
-    const organizationsDataString = localStorage.getItem('organizationsData');
-    if (organizationsDataString) {
-      const organizations = JSON.parse(organizationsDataString);
-      const activeOrg = organizations.find((org: any) => org.isActive);
-     this.organizaitonId= activeOrg?.id;
-    }
+    this.organizaitonId = localStorage.getItem('tenantId');
+    // if (organizationsDataString) {
+    //   const organizations = JSON.parse(organizationsDataString);
+    //   const activeOrg = organizations.find((org: any) => org.isActive);
+    //  this.organizaitonId= activeOrg?.id;
+    // }
     this.subscriptionPlanService.getPlans(this.organizaitonId).subscribe((data: any[]) => {
       const locale: string = 'en-US';
       this.plans = data.map((plan: any) => {

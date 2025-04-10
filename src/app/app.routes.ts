@@ -4,7 +4,7 @@ import { AuthGuard } from './guards/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'register', 
+    redirectTo: 'login', 
     pathMatch: 'full',
   },
   {
@@ -30,5 +30,5 @@ export const routes: Routes = [
         (c) => c.AdminHomePageComponent
       ),
   },
-  { path: '**', redirectTo: 'register' }, 
+  { path: '**', redirectTo: 'login' }, 
 ];
