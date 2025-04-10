@@ -1,0 +1,32 @@
+.error-container {
+    max-width: 500px;
+    margin: 80px auto;
+    padding: 32px;
+    border-radius: 16px;
+    background-color: #fff;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  
+    .error-icon {
+      margin-bottom: 16px;
+    }
+  
+    .title {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #d32f2f;
+    }
+  
+    .message {
+      font-size: 16px;
+      margin-bottom: 24px;
+      color: #555;
+    }
+  
+    .retry-button {
+      padding: 8px 24px;
+      border-radius: 24px;
+    }
+  }
+  

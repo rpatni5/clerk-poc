@@ -3,6 +3,6 @@ organizationName: string;
 organizationId: string;
 userName:string |undefined;
 email:string |undefined;
-createdAt:string;
+OrganizationcreatedAt:string;
 userId:string|undefined;
 }

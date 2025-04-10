@@ -30,6 +30,27 @@ export default [
         (c) => c.SubscriptionComponent
       ),
   },
+  // {
+  //   path: 'cards',
+  //   loadComponent: () =>
+  //     import('./user-cards/user-cards.component').then(
+  //       (c) => c.UserCardsComponent
+  //     ),
+  // },
+  {
+    path: 'success',
+    loadComponent: () =>
+      import('./success-transaction/success-transaction.component').then(
+        (c) => c.SuccessTransactionComponent
+      ),
+  },
+  {
+    path: 'failure',
+    loadComponent: () =>
+      import('./failure-transaction/failure-transaction.component').then(
+        (c) => c.FailureTransactionComponent
+      ),
+  },
 
 
 ] as Route[];
