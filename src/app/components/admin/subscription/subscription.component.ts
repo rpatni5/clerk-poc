@@ -26,17 +26,19 @@ export class SubscriptionComponent {
 
   ngOnInit() {
     console.log(localStorage)
-    const customerId = localStorage.getItem('customerId');
-    this.subscriptionPlanService.getPlans(customerId).subscribe((data: any[]) => {
+    const organizationsDataString = localStorage.getItem('organizationsData');
+    let organizationId = null;
+    if (organizationsDataString) {
+      const organizations = JSON.parse(organizationsDataString);
+      const activeOrg = organizations.find((org: any) => org.isActive);
+      organizationId = activeOrg?.id;
+    }
+    this.subscriptionPlanService.getPlans(organizationId).subscribe((data: any[]) => {
       const locale: string = 'en-US';
-
       this.plans = data.map((plan: any) => {
         const createdAt = new Date(plan.createdAt);
-        const expiryDate = new Date(createdAt);
-        expiryDate.setDate(createdAt.getDate() + 14);
-
+        const expiryDate = new Date(plan.expiryDate);
         const isExpired = expiryDate < new Date();
-
         return {
           ...plan,
           features: typeof plan.features === 'string' ? plan.features.split(',') : plan.features,

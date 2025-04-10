@@ -19,7 +19,7 @@ export class SubscriptionService {
     return this.http.post('/api/subscription/upgrade', data);
   }
   createCustomer(customerData: any): Observable<StripeCustomerResponseModel> {
-    return this.http.post<StripeCustomerResponseModel>(`${this.baseUrl}Stripe/create-customer`, customerData);
+    return this.http.post<StripeCustomerResponseModel>(`${this.baseUrl}SubscriptionPlan/create-customer`, customerData);
   }
 
   createCheckoutSession(resp: CheckoutSessionModel) {
