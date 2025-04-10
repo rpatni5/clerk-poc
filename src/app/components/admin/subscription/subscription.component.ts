@@ -17,6 +17,7 @@ import { CheckoutSessionModel } from '../../../model/checkoutSessionModel';
 })
 export class SubscriptionComponent {
   plans: any[] = [];
+  organizaitonId:any;
   constructor(private readonly subscriptionPlanService: SubscriptionPlanService,
     private readonly organizationService: OrganizationService,
     private router: Router,
@@ -27,13 +28,12 @@ export class SubscriptionComponent {
   ngOnInit() {
     console.log(localStorage)
     const organizationsDataString = localStorage.getItem('organizationsData');
-    let organizationId = null;
     if (organizationsDataString) {
       const organizations = JSON.parse(organizationsDataString);
       const activeOrg = organizations.find((org: any) => org.isActive);
-      organizationId = activeOrg?.id;
+     this.organizaitonId= activeOrg?.id;
     }
-    this.subscriptionPlanService.getPlans(organizationId).subscribe((data: any[]) => {
+    this.subscriptionPlanService.getPlans(this.organizaitonId).subscribe((data: any[]) => {
       const locale: string = 'en-US';
       this.plans = data.map((plan: any) => {
         const createdAt = new Date(plan.createdAt);
@@ -57,6 +57,7 @@ export class SubscriptionComponent {
       quantity:1,
       mode:"subscription",
       stripeCustomerId: customerId,
+      organizationId: this.organizaitonId,
     }
     this.subscriptionService.createCheckoutSession(resp).subscribe({
       next: (resp) => {

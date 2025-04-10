@@ -3,4 +3,5 @@ export interface CheckoutSessionModel {
     quantity?: number;
     mode?: string;
     stripeCustomerId?:string |null;
+    organizationId?:string|null;
   }

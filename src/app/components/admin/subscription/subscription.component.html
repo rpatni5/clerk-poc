@@ -1,13 +1,11 @@
 <div class="subscription-wrapper">
   <ng-container *ngFor="let plan of plans">
-    <div class="free-plan-banner" *ngIf="plan.name?.toLowerCase().includes('free')&& plan.productId === plan.activePlanId">
+    <div class="free-plan-banner"
+      *ngIf="plan.name?.toLowerCase().includes('free')&& plan.productId === plan.activePlanId">
       ⚠️ You are currently on the <strong>Free Plan</strong>, limited to <strong>2 users</strong>.
       This plan will expire on <strong>{{ plan.expiryDateFormatted }}</strong>.
     </div>
     <mat-card class="subscription-card" *ngIf="!plan.name?.toLowerCase().includes('free')">
-      <div class="active-plan-banner" *ngIf="plan.productId === plan.activePlanId">
-        ✅ You are currently on this plan and it will expire on <strong></strong>.
-      </div>
       <mat-card-header>
         <mat-card-title>{{ plan.name }}</mat-card-title>
         <mat-card-subtitle>{{ plan.subtitle }}</mat-card-subtitle>
@@ -19,9 +17,21 @@
         <div class="price">{{ plan.price }}</div>
       </mat-card-content>
       <mat-card-actions>
-        <ng-container *ngIf="!plan.name?.toLowerCase().includes('free'); else freeTemplate">
-          <button mat-stroked-button (click)="updatePlan(plan.priceId)">Upgrade to {{ plan.name }}</button>
+        <ng-container *ngIf="plan.productId === plan.activePlanId; else showUpgradeButton">
+          <div class="highlighted-plan-message">
+            <div class="line-1">You are running under this plan.</div>
+            <div class="line-2">Next payment date is <strong>{{ plan.expiryDateFormatted }}</strong>.</div>
+          </div>
         </ng-container>
+
+        <ng-template #showUpgradeButton>
+          <ng-container *ngIf="!plan.name?.toLowerCase().includes('free'); else freeTemplate">
+            <button mat-stroked-button (click)="updatePlan(plan.priceId)">
+              Upgrade to {{ plan.name }}
+            </button>
+          </ng-container>
+        </ng-template>
+
         <ng-template #freeTemplate>
           <ng-container *ngIf="!plan.isExpired; else expiredBtn">
             <button mat-stroked-button color="accent" class="expire-button">
@@ -36,6 +46,7 @@
           </button>
         </ng-template>
       </mat-card-actions>
+
     </mat-card>
   </ng-container>
 </div>
