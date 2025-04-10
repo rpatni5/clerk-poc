@@ -1,21 +1,4 @@
-// import { Injectable } from '@angular/core';
-// import { CanActivate, Router, UrlTree } from '@angular/router';
-// import { Observable, map } from 'rxjs';
-// import { SubscriptionService } from '../services/subscription.service';
 
-// @Injectable({ providedIn: 'root' })
-// export class SubscriptionGuard implements CanActivate {
-
-//   constructor(private subscriptionService: SubscriptionService, private router: Router) {}
-
-//   canActivate(): Observable<boolean | UrlTree> {
-//     return this.subscriptionService.getSubscriptionStatus().pipe(
-//       map(isActive => {
-//         return isActive ? true : this.router.createUrlTree(['/admin/subscription']);
-//       })
-//     );
-//   }
-// }
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
 import { Observable, of } from 'rxjs';
