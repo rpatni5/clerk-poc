@@ -1,10 +1,13 @@
 <div class="subscription-wrapper">
   <ng-container *ngFor="let plan of plans">
-    <!-- <div class="free-plan-banner" *ngIf="plan.name?.toLowerCase().includes('free')">
+    <div class="free-plan-banner" *ngIf="plan.name?.toLowerCase().includes('free')&& plan.productId === plan.activePlanId">
       ⚠️ You are currently on the <strong>Free Plan</strong>, limited to <strong>2 users</strong>.
-      This plan will expire <strong>soon</strong>.
-    </div> -->
+      This plan will expire on <strong>{{ plan.expiryDateFormatted }}</strong>.
+    </div>
     <mat-card class="subscription-card" *ngIf="!plan.name?.toLowerCase().includes('free')">
+      <div class="active-plan-banner" *ngIf="plan.productId === plan.activePlanId">
+        ✅ You are currently on this plan and it will expire on <strong></strong>.
+      </div>
       <mat-card-header>
         <mat-card-title>{{ plan.name }}</mat-card-title>
         <mat-card-subtitle>{{ plan.subtitle }}</mat-card-subtitle>
