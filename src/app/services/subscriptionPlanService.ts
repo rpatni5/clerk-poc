@@ -11,8 +11,8 @@ export class SubscriptionPlanService {
     private controller = 'SubscriptionPlan'
     constructor(private http: HttpClient) { }
 
-    getPlans(customerId: any) {
-        return this.http.get<any>(`${this.baseUrl}${this.controller}/get?customerId=${customerId}`);
+    getPlans(organizaitonId: any) {
+        return this.http.get<any>(`${this.baseUrl}${this.controller}/get?organizationId=${organizaitonId}`);
     }
 
     getSubscriptionStatus(organizationId: string): Observable<boolean> {
