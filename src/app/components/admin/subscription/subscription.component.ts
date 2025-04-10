@@ -4,6 +4,9 @@ import { MatCardModule } from '@angular/material/card';
 import { SubscriptionPlanService } from '../../../services/subscriptionPlanService';
 import { OrganizationService } from '../../../services/organizationService';
 import { StorageService } from '../../../services/storageService';
+import { Router } from '@angular/router';
+import { SubscriptionService } from '../../../services/subscription.service';
+import { CheckoutSessionModel } from '../../../model/checkoutSessionModel';
 
 @Component({
   selector: 'app-subscription',
@@ -16,13 +19,15 @@ export class SubscriptionComponent {
   plans: any[] = [];
   constructor(private readonly subscriptionPlanService: SubscriptionPlanService,
     private readonly organizationService: OrganizationService,
+    private router: Router,
+    private subscriptionService: SubscriptionService,
   ) {
   }
 
   ngOnInit() {
-    const orgId = localStorage.getItem('tenantId');
-    const tenantId = orgId ? orgId.replace(/^"|"$/g, '') : null;
-    this.subscriptionPlanService.getPlans(tenantId).subscribe((data: any[]) => {
+    console.log(localStorage)
+    const customerId = localStorage.getItem('customerId');
+    this.subscriptionPlanService.getPlans(customerId).subscribe((data: any[]) => {
       const locale: string = 'en-US';
 
       this.plans = data.map((plan: any) => {
@@ -41,5 +46,26 @@ export class SubscriptionComponent {
         };
       });
     })
+  }
+
+  async updatePlan(priceId: string) {
+    let customerId= localStorage.getItem("customerId")
+    var resp : CheckoutSessionModel={
+      priceId : priceId,
+      quantity:1,
+      mode:"subscription",
+      stripeCustomerId: customerId,
+    }
+    this.subscriptionService.createCheckoutSession(resp).subscribe({
+      next: (resp) => {
+        console.log(resp);
+        if (resp?.url) {
+          window.location.href = resp.url;
+        }
+      },
+      error: (err) => {
+        console.error('Error creating checkout session:', err);
+      }
+    });
   }
 }

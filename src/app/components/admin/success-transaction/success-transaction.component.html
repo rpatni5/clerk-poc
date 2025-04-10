@@ -1,0 +1,17 @@
+<div class="success-container mat-elevation-z4">
+  <div class="success-icon">
+    <mat-icon color="primary" style="font-size: 48px;">check_circle</mat-icon>
+  </div>
+
+  <h2 class="title">Payment Successful 🎉</h2>
+
+  <p class="message">
+    Thank you! Your order <strong>{{ orderId }}</strong> has been successfully processed.
+  </p>
+
+  <p class="info">Session ID: <span class="session-id">{{ sessionId }}</span></p>
+
+  <button mat-stroked-button color="primary"class="dashboard-button"  routerLink="/admin/dashboard">
+    Go to Dashboard
+  </button>
+</div>

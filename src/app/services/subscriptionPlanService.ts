@@ -10,7 +10,7 @@ export class SubscriptionPlanService {
     private controller = 'SubscriptionPlan'
     constructor(private http: HttpClient) { }
 
-    getPlans(tenantId: any) {
-        return this.http.get<any>(`${this.baseUrl}${this.controller}/get?tenantId=${tenantId}`);
+    getPlans(customerId: any) {
+        return this.http.get<any>(`${this.baseUrl}${this.controller}/get?customerId=${customerId}`);
       }
 }

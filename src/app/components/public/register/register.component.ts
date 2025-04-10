@@ -25,6 +25,7 @@ import { SubscriptionService } from '../../../services/subscription.service';
 import { stripeCustomerModel } from '../../../model/stripeCustomerModel';
 import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { StripeCustomerResponseModel } from '../../../model/stripeCustomerResponseModel';
 
 @Component({
   selector: 'app-register',
@@ -123,9 +124,6 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
           this.storageService.saveOrganization(newOrg);
           const isOrgCreated = localStorage.getItem("orgCreated_" + org.id);
           const isCustomerCreated = localStorage.getItem("customerCreated_" + org.id);
-          if (isOrgCreated == null) {
-            this.saveOrg(newOrg);
-          }
           const users = this.storageService.getUsers();
           const updatedUsers = users.map(user =>
             user.id === this.userId ? { ...user, tenantId: this.organizationId } : user
@@ -136,6 +134,9 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
           if (isCustomerCreated == null) {
             this.createCustomer(org, currentUser)
           }
+          // if (isOrgCreated == null) {
+          //   this.saveOrg(newOrg);
+          // }
           this.ngZone.run(() => {
             console.log("Navigating to /admin/dashboard...");
             this.router.navigate(['/admin/dashboard']).then(() => {
@@ -145,10 +146,10 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
       });
     });
   }
-  async saveOrg(organizationModel: any): Promise<boolean> {
+  saveOrg(organizationModel: any) {
     try {
-      await this.organizationService.save(organizationModel);
       localStorage.setItem("orgCreated_" + organizationModel.id, "true");
+      let resp = firstValueFrom(this.organizationService.save(organizationModel));
       return true;
     } catch (err) {
       console.error('Save organization failed:', err);
@@ -156,18 +157,20 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  async createCustomer(org: any, currentUser: any): Promise<boolean> {
+  async createCustomer(org: any, currentUser: any) {
     const customer: stripeCustomerModel = {
       organizationName: org.name,
       organizationId: org.id,
-      createdAt: new Date().toISOString(),
+      OrganizationcreatedAt: new Date().toISOString(),
       userName: `${currentUser?.firstName} ${currentUser?.lastName}`,
       email: currentUser?.email,
       userId: currentUser?.id
     };
     try {
-      await this.subscriptionService.createCustomer(customer);
       localStorage.setItem("customerCreated_" + org.id, "true");
+      let resp = await firstValueFrom(this.subscriptionService.createCustomer(customer)) as StripeCustomerResponseModel;
+      const customerId = resp?.customer?.id;
+      localStorage.setItem("customerId", customerId);
       return true;
     } catch (err) {
       console.error("Customer creation failed", err);
