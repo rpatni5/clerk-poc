@@ -1,0 +1,41 @@
+.success-container {
+    max-width: 500px;
+    margin: 80px auto;
+    padding: 32px;
+    border-radius: 16px;
+    background-color: #ffffff;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  
+    .success-icon {
+      margin-bottom: 16px;
+    }
+  
+    .title {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #2e7d32;
+    }
+  
+    .message {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+  
+    .info {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 24px;
+    }
+  
+    .session-id {
+      font-family: monospace;
+    }
+  
+    .dashboard-button {
+      padding: 8px 24px;
+      border-radius: 24px;
+    }
+  }
+  
