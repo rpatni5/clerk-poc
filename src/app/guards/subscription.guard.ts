@@ -48,7 +48,7 @@ export class SubscriptionGuard implements CanActivate {
 
     return this.subscriptionService.getSubscriptionStatus(organizationId).pipe(
       map(isActive => {
-        return isActive ? true : this.router.createUrlTree(['/admin/subscription']);
+        return isActive ? true : false;
       })
     );
   }
