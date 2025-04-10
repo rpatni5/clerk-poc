@@ -1,4 +1,5 @@
 import { Route } from '@angular/router';
+import { SubscriptionGuard } from '../../guards/subscription.guard';
 
 export default [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -8,6 +9,7 @@ export default [
       import('./dashboard/dashboard.component').then(
         (c) => c.DashboardComponent
       ),
+      canActivate: [SubscriptionGuard]
   },
   {
     path: 'users',
@@ -15,6 +17,7 @@ export default [
       import('./users/add-users/add-users.component').then(
         (c) => c.AddUsersComponent
       ),
+      canActivate: [SubscriptionGuard]
   },
   {
     path: 'organization',

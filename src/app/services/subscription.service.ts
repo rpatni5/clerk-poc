@@ -11,6 +11,7 @@ export class SubscriptionService {
   private controller = 'Stripe'
   constructor(private http: HttpClient) { }
 
+  
   subscribe(data: any) {
     return this.http.post('/api/subscription/create', data);
   }

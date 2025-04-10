@@ -7,6 +7,7 @@ import { UserResource } from "@clerk/types";
 import { StorageService } from '../../../services/storageService';
 import { Tenant } from '../../../interface/tenantInterface';
 import { User } from '../../../interface/userInterface';
+ import { SubscriptionPlanService } from '../../../services/subscriptionPlanService';
 
 @Component({
   selector: 'app-admin-home-page',
@@ -20,13 +21,28 @@ export class AdminHomePageComponent {
   usersData: User[] = [];
   organizationData: Tenant[] = [];
   isSystemAdministrator: boolean = false;
+  isSubscriptionValid = true;
   constructor(private clerk: ClerkService, private router: Router,
     private storageService: StorageService,
-    private cdRef: ChangeDetectorRef
-
+    private cdRef: ChangeDetectorRef,
+    private subscriptionService:SubscriptionPlanService
   ) { }
 
   ngOnInit() {
+    const organizationsDataString = localStorage.getItem('organizationsData');
+    let organizationId = null;
+    
+    if (organizationsDataString) {
+      const organizations = JSON.parse(organizationsDataString);
+      const activeOrg = organizations.find((org: any) => org.isActive);
+      organizationId = activeOrg?.id;
+    }
+    
+    if (organizationId) {
+      this.subscriptionService.getSubscriptionStatus(organizationId).subscribe(status => {
+        this.isSubscriptionValid = status;
+      });
+    }
     this.clerk.user$.subscribe((user: UserResource | null | undefined) => {
       if (user) {
         this.userImageUrl = user.imageUrl;

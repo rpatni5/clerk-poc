@@ -5,10 +5,10 @@
         </div>
         <div class="menu">
             <ul>
-                <li *ngIf="!isSystemAdministrator"><a routerLink="/admin/dashboard">Dashboard</a></li>
-                <li *ngIf="!isSystemAdministrator"><a routerLink="/admin/users">Users</a></li>
-                <li *ngIf="isSystemAdministrator"><a routerLink="/admin/organization">Organization</a></li>
-                <li *ngIf="!isSystemAdministrator"><a routerLink="/admin/subscription">Subscription</a></li>
+                <li *ngIf="!isSystemAdministrator && isSubscriptionValid"><a routerLink="/admin/dashboard">Dashboard</a></li>
+                <li *ngIf="!isSystemAdministrator && isSubscriptionValid"><a routerLink="/admin/users">Users</a></li>
+                <li *ngIf="isSystemAdministrator && isSubscriptionValid"><a routerLink="/admin/organization">Organization</a></li>
+                <li *ngIf="!isSystemAdministrator && isSubscriptionValid"><a routerLink="/admin/subscription">Subscription</a></li>
                 <!-- <li *ngIf="!isSystemAdministrator"><a routerLink="/admin/cards">Cards</a></li> -->
             </ul>
         </div>
