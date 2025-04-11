@@ -87,10 +87,7 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
           };
           console.log("user", user);
           this.storageService.saveUser(newUser);
-          const usersData = this.storageService.getUsers();
-          console.log("Stored Users in Local Storage:", usersData);
           this.openCreateOrganization();
-
         }
       });
     }
