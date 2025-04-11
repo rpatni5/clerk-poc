@@ -31,17 +31,10 @@ export class AdminHomePageComponent {
   ) { }
 
   ngOnInit() {
-    const organizationsDataString = localStorage.getItem('organizationsData');
-    let organizationId = null;
+    const tenantId = localStorage.getItem('tenantId');
     
-    if (organizationsDataString) {
-      const organizations = JSON.parse(organizationsDataString);
-      const activeOrg = organizations.find((org: any) => org.isActive);
-      organizationId = activeOrg?.id;
-    }
-    
-    if (organizationId) {
-      this.subscriptionService.getSubscriptionStatus(organizationId).subscribe(status => {
+    if (tenantId) {
+      this.subscriptionService.getSubscriptionStatus(tenantId).subscribe(status => {
         this.isSubscriptionValid = status.isActive;  
         this.subscriptionMessage = status.message;
       });
