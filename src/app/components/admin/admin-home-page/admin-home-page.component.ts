@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ClerkService } from '../../../services/clerkService';
 import { take } from 'rxjs';
@@ -7,6 +7,7 @@ import { UserResource } from "@clerk/types";
 import { StorageService } from '../../../services/storageService';
 import { Tenant } from '../../../interface/tenantInterface';
 import { User } from '../../../interface/userInterface';
+ import { SubscriptionPlanService } from '../../../services/subscriptionPlanService';
 
 @Component({
   selector: 'app-admin-home-page',
@@ -19,12 +20,26 @@ export class AdminHomePageComponent {
   userImageUrl: string | null = null;
   usersData: User[] = [];
   organizationData: Tenant[] = [];
-
+  isSystemAdministrator: boolean = false;
+  isWorker: boolean = false;
+  isSubscriptionValid: boolean = false;
+  subscriptionMessage: string = '';
+  
   constructor(private clerk: ClerkService, private router: Router,
     private storageService: StorageService,
+    private cdRef: ChangeDetectorRef,
+    private subscriptionService:SubscriptionPlanService
   ) { }
 
   ngOnInit() {
+    const tenantId = localStorage.getItem('tenantId');
+    
+    if (tenantId) {
+      this.subscriptionService.getSubscriptionStatus(tenantId).subscribe(status => {
+        this.isSubscriptionValid = status.isActive;  
+        this.subscriptionMessage = status.message;
+      });
+    }
     this.clerk.user$.subscribe((user: UserResource | null | undefined) => {
       if (user) {
         this.userImageUrl = user.imageUrl;
@@ -39,6 +54,13 @@ export class AdminHomePageComponent {
           await clerkInstance.signOut();
           localStorage.removeItem("userId");
           localStorage.removeItem("tenantId");
+          localStorage.removeItem("organizationsData");
+          localStorage.removeItem("customerId");
+          Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('orgCreated_') || key.startsWith('customerCreated_')) {
+              localStorage.removeItem(key);
+            }
+          });
           this.usersData = [];
           this.organizationData = [];
 
@@ -50,7 +72,32 @@ export class AdminHomePageComponent {
     }
   }
 
-
+  ngAfterViewInit(): void {
+    this.clerk.clerk$.pipe(take(1)).subscribe((clerk) => {
+      if (!clerk) {
+        console.error("Clerk is not initialized.");
+        return;
+      }
+      const currentUser = clerk.user;
+      if (!currentUser) {
+        console.error("No user found.");
+        return;
+      }
+      const accountAdminMembership = currentUser.organizationMemberships.find(membership =>
+        membership.role === 'org:system_administrator'
+      );
+      const worker = currentUser.organizationMemberships.find(membership =>
+        membership.role === 'org:worker'
+      );
+      if (accountAdminMembership?.role == 'org:system_administrator') {
+        this.isSystemAdministrator = true;
+      }
+      if (worker?.role == 'org:worker') {
+        this.isWorker = true;
+      }
+      this.cdRef.detectChanges();
+    });
+  }
 
   manageAccount() {
     this.clerk.openUserProfile();

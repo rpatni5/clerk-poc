@@ -10,22 +10,33 @@ import { map } from 'rxjs/operators';
 export class AuthGuard implements CanActivate {
   constructor(private clerk: ClerkService, private router: Router,
 
-  ) {}
+  ) { }
 
   canActivate(): Observable<boolean> {
     return this.clerk.user$.pipe(
-        map((user) => {
+      map((user) => {
         if (!user) {
           this.router.navigate(['/login']);
           return false;
         }
-        const usersData = JSON.parse(localStorage.getItem("usersData") || "[]");
-        const currentUser = usersData.find((u: any) => u.id === user.id);
+        const tenantId = user.organizationMemberships?.[0]?.organization?.id;
+        // const usersData = JSON.parse(localStorage.getItem("usersData") || "[]");
+        // const currentUser = usersData.find((u: any) => u.id === user.id);
+        // const isSystemAdmin = user.organizationMemberships?.some(
+        //   (membership: any) =>
+        //     membership.role_name === 'System Administrator' ||
+        //     membership.role === 'org:system_administrator'
+        // );
 
-        if (currentUser && currentUser.tenantId) {
+        // if (isSystemAdmin) {
+        //   this.router.navigate(['/admin/organization']);
+        //   return true;
+        // }
+        if (user && tenantId) {
           return true;
         } else {
-          this.router.navigate(['/register']);
+          // this.router.navigate(['/register']);
+          window.location.href = '/register'
           return false;
         }
       })

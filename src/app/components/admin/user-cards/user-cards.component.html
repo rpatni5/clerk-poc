@@ -1,0 +1,27 @@
+<div class="d-flex">
+    <div class="col-xl-6 col-md-6">
+        <button ejs-button cssClass="e-success e-outline m-1" (click)="addCard()">
+            Add Card
+        </button>
+    </div>
+</div>
+
+
+
+
+<div class="root-container vw-100" #dialogContainer></div>
+<ng-template #cardDialog>
+    <h2 mat-dialog-title>Add Card</h2>
+
+    <mat-dialog-content>
+        <form>
+            <div id="card-element" class="card-element"></div>
+            <div *ngIf="cardError" class="card-error">{{ cardError }}</div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button mat-button>Cancel</button>
+        <button mat-raised-button color="primary" >Save Card</button>
+    </mat-dialog-actions>
+</ng-template>

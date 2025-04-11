@@ -19,6 +19,13 @@ import { CreateOrganizationProps, SignUpProps } from '@clerk/clerk-js/dist/types
 import { StorageService } from '../../../services/storageService';
 import { User } from '../../../interface/userInterface';
 import { Tenant } from '../../../interface/tenantInterface';
+import { OrganizationService } from '../../../services/organizationService';
+import { OrganizationModel } from '../../../model/organizationModel';
+import { SubscriptionService } from '../../../services/subscription.service';
+import { stripeCustomerModel } from '../../../model/stripeCustomerModel';
+import { HttpErrorResponse } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { StripeCustomerResponseModel } from '../../../model/stripeCustomerResponseModel';
 
 @Component({
   selector: 'app-register',
@@ -38,9 +45,12 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
   userId: string | null = null;
   organizationId: string | null = null;
   organizationName: string = '';
-
+  isOrgSaved: boolean = false;
+  isCustomerCreated: boolean = false;
   constructor(private clerkService: ClerkService, private ngZone: NgZone, private router: Router, private storageService: StorageService,
-    private cdRef: ChangeDetectorRef) { }
+    private cdRef: ChangeDetectorRef,
+    private organizationService: OrganizationService,
+    private subscriptionService: SubscriptionService) { }
 
   ngAfterViewInit() {
     localStorage.removeItem("userId");
@@ -77,10 +87,7 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
           };
           console.log("user", user);
           this.storageService.saveUser(newUser);
-          const usersData = this.storageService.getUsers();
-          console.log("Stored Users in Local Storage:", usersData);
           this.openCreateOrganization();
-
         }
       });
     }
@@ -89,7 +96,7 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
   openCreateOrganization() {
     this.cdRef.detectChanges();
     if (!this.clerkOrgCreateRef || !this.clerkOrgCreateRef.nativeElement) {
-      this.router.navigate(['/register']);
+      window.location.href = '/register';
       console.error(" clerkOrgCreateRef is still not available!");
       return;
     }
@@ -99,9 +106,10 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
     };
     this.clerkService.clerk$.subscribe((clerk) => {
       clerk.mountCreateOrganization(this.clerkOrgCreateRef.nativeElement, updatedOrgProps);
-    
+
       this.clerkService.organization$.pipe(take(1)).subscribe((org) => {
         if (org) {
+          console.log("Organization", org)
           this.organizationId = org.id;
           const newOrg: Tenant = {
             id: org.id,
@@ -111,21 +119,62 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
             isActive: true,
           };
           this.storageService.saveOrganization(newOrg);
+          const isOrgCreated = localStorage.getItem("orgCreated_" + org.id);
+          const isCustomerCreated = localStorage.getItem("customerCreated_" + org.id);
           const users = this.storageService.getUsers();
           const updatedUsers = users.map(user =>
             user.id === this.userId ? { ...user, tenantId: this.organizationId } : user
           );
           localStorage.setItem("tenantId", JSON.stringify(this.organizationId));
-
           localStorage.setItem("usersData", JSON.stringify(updatedUsers));
-          this.ngZone.run(() => {
-            console.log("Navigating to /admin/dashboard...");
-            this.router.navigate(['/admin/dashboard']).then(() => {
-            });
-          });
+          const currentUser = users.find(user => user.id === this.userId);
+          if (isCustomerCreated == null) {
+            this.createCustomer(org, currentUser)
+          }
+          window.location.href = '/admin/dashboard';
+          // if (isOrgCreated == null) {
+          //   this.saveOrg(newOrg);
+          // }
+          // this.ngZone.run(() => {
+          //   console.log("Navigating to /admin/dashboard...");
+          //   // this.router.navigate(['/admin/dashboard']).then(() => {
+          //   // });
+          //   window.location.href = '/admin/dashboard';
+          // });
         }
       });
     });
+  }
+  saveOrg(organizationModel: any) {
+    try {
+      localStorage.setItem("orgCreated_" + organizationModel.id, "true");
+      let resp = firstValueFrom(this.organizationService.save(organizationModel));
+      return true;
+    } catch (err) {
+      console.error('Save organization failed:', err);
+      return false;
+    }
+  }
+
+  async createCustomer(org: any, currentUser: any) {
+    const customer: stripeCustomerModel = {
+      organizationName: org.name,
+      organizationId: org.id,
+      OrganizationcreatedAt: new Date().toISOString(),
+      userName: `${currentUser?.firstName} ${currentUser?.lastName}`,
+      email: currentUser?.email,
+      userId: currentUser?.id
+    };
+    try {
+      localStorage.setItem("customerCreated_" + org.id, "true");
+      let resp = await firstValueFrom(this.subscriptionService.createCustomer(customer)) as StripeCustomerResponseModel;
+      const customerId = resp?.customer?.id;
+      localStorage.setItem("customerId", customerId);
+      return true;
+    } catch (err) {
+      console.error("Customer creation failed", err);
+      return false;
+    }
   }
 
   ngOnDestroy(): void {

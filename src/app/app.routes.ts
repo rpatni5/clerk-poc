@@ -1,10 +1,11 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
+import { SubscriptionGuard } from './guards/subscription.guard';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'register', 
+    redirectTo: 'login', 
     pathMatch: 'full',
   },
   {
@@ -23,12 +24,12 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard,SubscriptionGuard],
     loadChildren: () => import('./components/admin/admin.routes'),
     loadComponent: () =>
       import('./components/admin/admin-home-page/admin-home-page.component').then(
         (c) => c.AdminHomePageComponent
       ),
   },
-  { path: '**', redirectTo: 'register' }, 
+  { path: '**', redirectTo: 'login' }, 
 ];

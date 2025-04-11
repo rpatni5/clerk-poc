@@ -1,4 +1,5 @@
 import { Route } from '@angular/router';
+import { SubscriptionGuard } from '../../guards/subscription.guard';
 
 export default [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -21,6 +22,34 @@ export default [
     loadComponent: () =>
       import('./organization/organization.component').then(
         (c) => c.OrganizationComponent
+      ),
+  },
+  {
+    path: 'subscription',
+    loadComponent: () =>
+      import('./subscription/subscription.component').then(
+        (c) => c.SubscriptionComponent
+      ),
+  },
+  // {
+  //   path: 'cards',
+  //   loadComponent: () =>
+  //     import('./user-cards/user-cards.component').then(
+  //       (c) => c.UserCardsComponent
+  //     ),
+  // },
+  {
+    path: 'success',
+    loadComponent: () =>
+      import('./success-transaction/success-transaction.component').then(
+        (c) => c.SuccessTransactionComponent
+      ),
+  },
+  {
+    path: 'failure',
+    loadComponent: () =>
+      import('./failure-transaction/failure-transaction.component').then(
+        (c) => c.FailureTransactionComponent
       ),
   },
 
