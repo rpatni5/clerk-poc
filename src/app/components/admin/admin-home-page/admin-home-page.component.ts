@@ -21,7 +21,9 @@ export class AdminHomePageComponent {
   usersData: User[] = [];
   organizationData: Tenant[] = [];
   isSystemAdministrator: boolean = false;
-  isSubscriptionValid = true;
+  isSubscriptionValid: boolean = false;
+  subscriptionMessage: string = '';
+  
   constructor(private clerk: ClerkService, private router: Router,
     private storageService: StorageService,
     private cdRef: ChangeDetectorRef,
@@ -40,7 +42,8 @@ export class AdminHomePageComponent {
     
     if (organizationId) {
       this.subscriptionService.getSubscriptionStatus(organizationId).subscribe(status => {
-        this.isSubscriptionValid = status;
+        this.isSubscriptionValid = status.isActive;  
+        this.subscriptionMessage = status.message;
       });
     }
     this.clerk.user$.subscribe((user: UserResource | null | undefined) => {

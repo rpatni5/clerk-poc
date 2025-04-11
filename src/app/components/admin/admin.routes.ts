@@ -9,7 +9,6 @@ export default [
       import('./dashboard/dashboard.component').then(
         (c) => c.DashboardComponent
       ),
-      canActivate: [SubscriptionGuard]
   },
   {
     path: 'users',
@@ -17,7 +16,6 @@ export default [
       import('./users/add-users/add-users.component').then(
         (c) => c.AddUsersComponent
       ),
-      canActivate: [SubscriptionGuard]
   },
   {
     path: 'organization',
