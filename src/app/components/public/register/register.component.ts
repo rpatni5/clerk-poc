@@ -131,15 +131,16 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
           if (isCustomerCreated == null) {
             this.createCustomer(org, currentUser)
           }
+          window.location.href = '/admin/dashboard';
           // if (isOrgCreated == null) {
           //   this.saveOrg(newOrg);
           // }
-          this.ngZone.run(() => {
-            console.log("Navigating to /admin/dashboard...");
-            // this.router.navigate(['/admin/dashboard']).then(() => {
-            // });
-            window.location.href = '/admin/dashboard';
-          });
+          // this.ngZone.run(() => {
+          //   console.log("Navigating to /admin/dashboard...");
+          //   // this.router.navigate(['/admin/dashboard']).then(() => {
+          //   // });
+          //   window.location.href = '/admin/dashboard';
+          // });
         }
       });
     });
