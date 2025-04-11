@@ -30,7 +30,7 @@
 
         <ng-template #showUpgradeButton>
           <ng-container *ngIf="!plan.name?.toLowerCase().includes('free'); else freeTemplate">
-            <button mat-stroked-button (click)="updatePlan(plan.priceId)">
+            <button mat-stroked-button (click)="updatePlan(plan.priceId,plan.customerId)">
               Upgrade to {{ plan.name }}
             </button>
           </ng-container>

@@ -87,10 +87,7 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
           };
           console.log("user", user);
           this.storageService.saveUser(newUser);
-          const usersData = this.storageService.getUsers();
-          console.log("Stored Users in Local Storage:", usersData);
           this.openCreateOrganization();
-
         }
       });
     }
@@ -99,7 +96,7 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
   openCreateOrganization() {
     this.cdRef.detectChanges();
     if (!this.clerkOrgCreateRef || !this.clerkOrgCreateRef.nativeElement) {
-      this.router.navigate(['/register']);
+      window.location.href = '/register';
       console.error(" clerkOrgCreateRef is still not available!");
       return;
     }
@@ -139,8 +136,9 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
           // }
           this.ngZone.run(() => {
             console.log("Navigating to /admin/dashboard...");
-            this.router.navigate(['/admin/dashboard']).then(() => {
-            });
+            // this.router.navigate(['/admin/dashboard']).then(() => {
+            // });
+            window.location.href = '/admin/dashboard';
           });
         }
       });

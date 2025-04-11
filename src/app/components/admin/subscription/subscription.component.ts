@@ -57,8 +57,8 @@ export class SubscriptionComponent {
     });
   }
 
-  async updatePlan(priceId: string) {
-    let customerId = localStorage.getItem("customerId")
+  async updatePlan(priceId: string,customerId:string) {
+    // let customerId = localStorage.getItem("customerId")
     var resp: CheckoutSessionModel = {
       priceId: priceId,
       quantity: 1,
