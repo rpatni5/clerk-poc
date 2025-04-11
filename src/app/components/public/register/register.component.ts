@@ -24,6 +24,8 @@ import { OrganizationModel } from '../../../model/organizationModel';
 import { SubscriptionService } from '../../../services/subscription.service';
 import { stripeCustomerModel } from '../../../model/stripeCustomerModel';
 import { HttpErrorResponse } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { StripeCustomerResponseModel } from '../../../model/stripeCustomerResponseModel';
 
 @Component({
   selector: 'app-register',
@@ -119,8 +121,9 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
             updatedAt: new Date().toISOString(),
             isActive: true,
           };
-          // if (!this.isOrgSaved) { this.saveOrg(newOrg); }
           this.storageService.saveOrganization(newOrg);
+          const isOrgCreated = localStorage.getItem("orgCreated_" + org.id);
+          const isCustomerCreated = localStorage.getItem("customerCreated_" + org.id);
           const users = this.storageService.getUsers();
           const updatedUsers = users.map(user =>
             user.id === this.userId ? { ...user, tenantId: this.organizationId } : user
@@ -128,9 +131,12 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
           localStorage.setItem("tenantId", JSON.stringify(this.organizationId));
           localStorage.setItem("usersData", JSON.stringify(updatedUsers));
           const currentUser = users.find(user => user.id === this.userId);
-          if (!this.isCustomerCreated) {
+          if (isCustomerCreated == null) {
             this.createCustomer(org, currentUser)
           }
+          // if (isOrgCreated == null) {
+          //   this.saveOrg(newOrg);
+          // }
           this.ngZone.run(() => {
             console.log("Navigating to /admin/dashboard...");
             this.router.navigate(['/admin/dashboard']).then(() => {
@@ -141,27 +147,37 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
     });
   }
   saveOrg(organizationModel: any) {
-    this.organizationService.save(organizationModel).subscribe({
-      next: (res) => this.isOrgSaved = true,
-      error: (err) => console.error((err as HttpErrorResponse).error.errors),
-    });
-    
+    try {
+      localStorage.setItem("orgCreated_" + organizationModel.id, "true");
+      let resp = firstValueFrom(this.organizationService.save(organizationModel));
+      return true;
+    } catch (err) {
+      console.error('Save organization failed:', err);
+      return false;
+    }
   }
 
-  createCustomer(org: any, currentUser: any) {
+  async createCustomer(org: any, currentUser: any) {
     const customer: stripeCustomerModel = {
       organizationName: org.name,
       organizationId: org.id,
-      createdAt: new Date().toISOString(),
+      OrganizationcreatedAt: new Date().toISOString(),
       userName: `${currentUser?.firstName} ${currentUser?.lastName}`,
       email: currentUser?.email,
       userId: currentUser?.id
     };
-    this.subscriptionService.createCustomer(customer).subscribe({
-      next: (res) => this.isCustomerCreated=true,
-      error: (err) => console.error('Save failed', err)
-    });
+    try {
+      localStorage.setItem("customerCreated_" + org.id, "true");
+      let resp = await firstValueFrom(this.subscriptionService.createCustomer(customer)) as StripeCustomerResponseModel;
+      const customerId = resp?.customer?.id;
+      localStorage.setItem("customerId", customerId);
+      return true;
+    } catch (err) {
+      console.error("Customer creation failed", err);
+      return false;
+    }
   }
+
   ngOnDestroy(): void {
     this.clerkService.clerk$.pipe(take(1)).subscribe((clerk) => {
       clerk.unmountSignUp(this.clerkSignUpRef?.nativeElement);

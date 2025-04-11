@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "../../enviornment/environment";
 import { OrganizationModel } from "../model/organizationModel";
+import { Observable } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -21,4 +22,9 @@ export class OrganizationService {
     save(organization: OrganizationModel) {
         return this.http.post<any>(`${this.baseUrl}${this.controller}/save`, organization);
     }
+
+    markExpire(organizationId: string): Observable<any> {
+        return this.http.post(`${this.baseUrl}${this.controller}/mark-expire?organizationId=${organizationId}`, {});
+      }
+      
 }
