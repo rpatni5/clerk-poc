@@ -1,7 +1,10 @@
+<div *ngIf="!isSubscriptionValid" class="free-plan-banner">
+  <span>{{subscriptionMessage}}</span>
+</div>
 <div class="subscription-wrapper">
   <ng-container *ngFor="let plan of plans">
     <div class="free-plan-banner"
-      *ngIf="plan.name?.toLowerCase().includes('free')&& plan.productId === plan.activePlanId && plan.isActivated">
+      *ngIf="plan.name?.toLowerCase().includes('free')&& plan.productId === plan.activePlanId && plan.isActivated && isSubscriptionValid">
       ⚠️ You are currently on the <strong>Free Plan</strong>, limited to <strong>2 users</strong>.
       This plan will expire on <strong>{{ plan.expiryDateFormatted }}</strong>.
     </div>
@@ -17,7 +20,8 @@
         <div class="price">{{ plan.price }}</div>
       </mat-card-content>
       <mat-card-actions>
-        <ng-container *ngIf="plan.productId === plan.activePlanId && plan.isActivated; else showUpgradeButton">
+        <ng-container
+          *ngIf="plan.productId === plan.activePlanId && plan.isActivated && isSubscriptionValid; else showUpgradeButton">
           <div class="highlighted-plan-message">
             <div class="line-1">You are running under this plan.</div>
             <div class="line-2">Next payment date is <strong>{{ plan.expiryDateFormatted }}</strong>.</div>
