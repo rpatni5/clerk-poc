@@ -7,6 +7,7 @@ import { StorageService } from '../../../services/storageService';
 import { Router } from '@angular/router';
 import { SubscriptionService } from '../../../services/subscription.service';
 import { CheckoutSessionModel } from '../../../model/checkoutSessionModel';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-subscription',
@@ -17,7 +18,9 @@ import { CheckoutSessionModel } from '../../../model/checkoutSessionModel';
 })
 export class SubscriptionComponent {
   plans: any[] = [];
-  organizaitonId:any;
+  organizaitonId: any;
+  isSubscriptionValid: boolean = true;
+  subscriptionMessage!: string;
   constructor(private readonly subscriptionPlanService: SubscriptionPlanService,
     private readonly organizationService: OrganizationService,
     private router: Router,
@@ -44,18 +47,22 @@ export class SubscriptionComponent {
           features: typeof plan.features === 'string' ? plan.features.split(',') : plan.features,
           createdAtFormatted: createdAt.toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' }),
           expiryDateFormatted: expiryDate.toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' }),
-          isExpired
+          isExpired,
         };
       });
     })
+    this.subscriptionPlanService.getSubscriptionStatus( this.organizaitonId).subscribe(status => {
+      this.isSubscriptionValid = status.isActive;
+      this.subscriptionMessage = status.message;
+    });
   }
 
   async updatePlan(priceId: string) {
-    let customerId= localStorage.getItem("customerId")
-    var resp : CheckoutSessionModel={
-      priceId : priceId,
-      quantity:1,
-      mode:"subscription",
+    let customerId = localStorage.getItem("customerId")
+    var resp: CheckoutSessionModel = {
+      priceId: priceId,
+      quantity: 1,
+      mode: "subscription",
       stripeCustomerId: customerId,
       organizationId: this.organizaitonId,
     }
