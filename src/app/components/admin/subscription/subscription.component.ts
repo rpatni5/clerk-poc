@@ -78,4 +78,14 @@ export class SubscriptionComponent {
       }
     });
   }
+  get isEnterprisePlanActive(): boolean {
+    return this.plans?.some(
+      plan =>
+        plan.name?.toLowerCase().includes('enterprise') &&
+        plan.productId === plan.activePlanId &&
+        plan.isActivated &&
+        this.isSubscriptionValid
+    );
+  }
+  
 }

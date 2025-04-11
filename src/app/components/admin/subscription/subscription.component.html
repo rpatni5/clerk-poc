@@ -8,7 +8,8 @@
       ⚠️ You are currently on the <strong>Free Plan</strong>, limited to <strong>2 users</strong>.
       This plan will expire on <strong>{{ plan.expiryDateFormatted }}</strong>.
     </div>
-    <mat-card class="subscription-card" *ngIf="!plan.name?.toLowerCase().includes('free')">
+    <mat-card class="subscription-card"
+    *ngIf="!plan.name?.toLowerCase().includes('free') && !(isEnterprisePlanActive && plan.name?.toLowerCase().includes('pro'))">
       <mat-card-header>
         <mat-card-title>{{ plan.name }}</mat-card-title>
         <mat-card-subtitle>{{ plan.subtitle }}</mat-card-subtitle>
