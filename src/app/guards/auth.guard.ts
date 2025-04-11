@@ -34,7 +34,8 @@ export class AuthGuard implements CanActivate {
         if (currentUser && currentUser.tenantId) {
           return true;
         } else {
-          this.router.navigate(['/register']);
+          // this.router.navigate(['/register']);
+          window.location.href = '/register'
           return false;
         }
       })

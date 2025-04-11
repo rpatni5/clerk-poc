@@ -55,16 +55,19 @@ export class LoginComponent {
 
             localStorage.setItem("tenantId", (tenantId));
             if (systemAdminMembership) {
-              this.router.navigate(['/admin/organization']); 
+              // this.router.navigate(['/admin/organization']); 
+              window.location.href = '/admin/organization';
             } else {
               this.subscriptionService.getSubscriptionStatus(tenantId).subscribe(status => {
                 this.isSubscriptionValid = status.isActive;
                 this.subscriptionMessage = status.message;
 
                 if (this.isSubscriptionValid) {
-                  this.router.navigate(['/admin/dashboard']);
+                  // this.router.navigate(['/admin/dashboard']);
+                  window.location.href ='/admin/dashboard'
                 } else {
-                  this.router.navigate(['/admin/subscription']);
+                  // this.router.navigate(['/admin/subscription']);
+                  window.location.href = '/admin/subscription'
                 }
               });
             }
