@@ -21,6 +21,7 @@ export class AdminHomePageComponent {
   usersData: User[] = [];
   organizationData: Tenant[] = [];
   isSystemAdministrator: boolean = false;
+  isWorker: boolean = false;
   isSubscriptionValid: boolean = false;
   subscriptionMessage: string = '';
   
@@ -85,8 +86,14 @@ export class AdminHomePageComponent {
       const accountAdminMembership = currentUser.organizationMemberships.find(membership =>
         membership.role === 'org:system_administrator'
       );
+      const worker = currentUser.organizationMemberships.find(membership =>
+        membership.role === 'org:worker'
+      );
       if (accountAdminMembership?.role == 'org:system_administrator') {
         this.isSystemAdministrator = true;
+      }
+      if (accountAdminMembership?.role == 'org:worker') {
+        this.isWorker = true;
       }
       this.cdRef.detectChanges();
     });
