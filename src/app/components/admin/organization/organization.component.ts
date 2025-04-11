@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { OrganizationService } from '../../../services/organizationService';
 import { FilterService, GridModule, GroupService, PageService, PageSettingsModel, SortService } from '@syncfusion/ej2-angular-grids';
 import { MatTableModule } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-organization',
@@ -14,7 +15,9 @@ export class OrganizationComponent {
   public pageSettings?: PageSettingsModel;
   data: any[] = []; 
   displayedColumns: string[] = ['name','actions'];
-  constructor(private readonly organizationService: OrganizationService) {
+  constructor(private readonly organizationService: OrganizationService,
+    private readonly snackbar:MatSnackBar
+  ) {
   }
 
   ngOnInit() {
@@ -25,6 +28,19 @@ export class OrganizationComponent {
       },
       error: (err) => {
         console.error('Error:', err);
+      }
+    });
+  }
+
+  markAsExpired(organizationId: string): void {
+    this.organizationService.markExpire(organizationId).subscribe({
+      next: () => {
+        this.snackbar.open('Plan marked as expired', 'Close', { duration: 3000 });
+        this.ngOnInit(); // If you want to reload data
+      },
+      error: (err: any) => {
+        console.error('Error marking as expired:', err);
+        this.snackbar.open('Error marking as expired', 'Close', { duration: 3000 });
       }
     });
   }
