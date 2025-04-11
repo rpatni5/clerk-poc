@@ -92,7 +92,7 @@ export class AdminHomePageComponent {
       if (accountAdminMembership?.role == 'org:system_administrator') {
         this.isSystemAdministrator = true;
       }
-      if (accountAdminMembership?.role == 'org:worker') {
+      if (worker?.role == 'org:worker') {
         this.isWorker = true;
       }
       this.cdRef.detectChanges();
