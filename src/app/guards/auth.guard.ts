@@ -21,16 +21,16 @@ export class AuthGuard implements CanActivate {
         }
         const usersData = JSON.parse(localStorage.getItem("usersData") || "[]");
         const currentUser = usersData.find((u: any) => u.id === user.id);
-        const isSystemAdmin = user.organizationMemberships?.some(
-          (membership: any) =>
-            membership.role_name === 'System Administrator' ||
-            membership.role === 'org:system_administrator'
-        );
+        // const isSystemAdmin = user.organizationMemberships?.some(
+        //   (membership: any) =>
+        //     membership.role_name === 'System Administrator' ||
+        //     membership.role === 'org:system_administrator'
+        // );
 
-        if (isSystemAdmin) {
-          this.router.navigate(['/admin/organization']);
-          return true;
-        }
+        // if (isSystemAdmin) {
+        //   this.router.navigate(['/admin/organization']);
+        //   return true;
+        // }
         if (currentUser && currentUser.tenantId) {
           return true;
         } else {

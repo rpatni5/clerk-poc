@@ -23,15 +23,15 @@ export class SubscriptionGuard implements CanActivate {
 
         const usersData = JSON.parse(localStorage.getItem("usersData") || "[]");
         const currentUser = usersData.find((u: any) => u.id === user.id);
-        const isSystemAdmin = user.organizationMemberships?.some(
-          (membership: any) =>
-            membership.role_name === 'System Administrator' ||
-            membership.role === 'org:system_administrator'
-        );
+        // const isSystemAdmin = user.organizationMemberships?.some(
+        //   (membership: any) =>
+        //     membership.role_name === 'System Administrator' ||
+        //     membership.role === 'org:system_administrator'
+        // );
   
-        if (isSystemAdmin) {
-          return of(this.router.createUrlTree(['/admin/organization']));
-        }
+        // if (isSystemAdmin) {
+        //   return of(this.router.createUrlTree(['/admin/organization']));
+        // }
         const tenantId = currentUser?.tenantId;
         localStorage.setItem("tenantId", (tenantId));
 

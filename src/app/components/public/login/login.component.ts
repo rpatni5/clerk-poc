@@ -48,19 +48,19 @@ export class LoginComponent {
           const currentUser = usersData.find(u => u.id === user.id);
             
           if (currentUser?.tenantId) {
-            if (user.organizationMemberships?.length) {
-              const isSystemAdmin = user.organizationMemberships.some(
-                (membership: any) =>
-                  membership.role_name === 'System Administrator' || 
-                  membership.role === 'org:system_administrator'
-              );
-              if (isSystemAdmin) {
-                this.router.navigate(['/admin/organization']).then(() => {
-                  window.location.reload();
-                });
-                return; 
-              }
-            }
+            // if (user.organizationMemberships?.length) {
+            //   const isSystemAdmin = user.organizationMemberships.some(
+            //     (membership: any) =>
+            //       membership.role_name === 'System Administrator' || 
+            //       membership.role === 'org:system_administrator'
+            //   );
+            //   if (isSystemAdmin) {
+            //     this.router.navigate(['/admin/organization']).then(() => {
+            //       window.location.reload();
+            //     });
+            //     return; 
+            //   }
+            // }
             localStorage.setItem("tenantId",(currentUser?.tenantId));
             this.subscriptionService.getSubscriptionStatus(currentUser.tenantId).subscribe(status => {
               this.isSubscriptionValid = status.isActive;
