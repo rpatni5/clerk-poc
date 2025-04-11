@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-failure-transaction',
@@ -9,5 +10,13 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './failure-transaction.component.scss'
 })
 export class FailureTransactionComponent {
+  constructor(private route: ActivatedRoute,
+    private router: Router,
+  ) { }
 
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.router.navigate(['admin/subscription']);
+    }, 2000);
+  }
 }

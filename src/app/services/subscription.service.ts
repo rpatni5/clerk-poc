@@ -8,7 +8,7 @@ import { CheckoutSessionModel } from "../model/checkoutSessionModel";
 @Injectable({ providedIn: 'root' })
 export class SubscriptionService {
   private baseUrl = environment.API_URL;
-  private controller = 'Stripe'
+  private controller = 'SubscriptionPlan'
   constructor(private http: HttpClient) { }
 
   
@@ -20,7 +20,7 @@ export class SubscriptionService {
     return this.http.post('/api/subscription/upgrade', data);
   }
   createCustomer(customerData: any): Observable<StripeCustomerResponseModel> {
-    return this.http.post<StripeCustomerResponseModel>(`${this.baseUrl}SubscriptionPlan/create-customer`, customerData);
+    return this.http.post<StripeCustomerResponseModel>(`${this.baseUrl}${this.controller}/create-customer`, customerData);
   }
 
   createCheckoutSession(resp: CheckoutSessionModel) {
