@@ -22,7 +22,7 @@ export class SuccessTransactionComponent implements OnInit {
     this.orderId = this.route.snapshot.queryParamMap.get('order_id') || '';
     console.log('Payment successful for session:', this.sessionId, 'Order:', this.orderId);
     setTimeout(() => {
-      this.router.navigate(['admin/subscription']);
-    }, 3000);
+      this.router.navigate(['admin/dashboard']);
+    }, 2000);
   }
 }
